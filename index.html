@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Análisis de Datos UNIR · Repaso por temas</title>
+<style>
+  :root{
+    --bg:#0d1021; --bg2:#151936; --panel:#1e2448; --panel2:#242b58; --text:#f5f7ff;
+    --muted:#b8c0e6; --line:rgba(255,255,255,.12); --a:#8b5cf6; --b:#22d3ee; --c:#f59e0b;
+    --ok:#34d399; --bad:#fb7185; --warn:#facc15; --shadow:0 18px 50px rgba(0,0,0,.35);
+  }
+  *{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:radial-gradient(circle at top left,#27306a 0,#11152d 35%,#090b18 100%);color:var(--text);}
+  .wrap{max-width:1180px;margin:auto;padding:28px 18px 70px}
+  header{padding:26px;border:1px solid var(--line);background:linear-gradient(135deg,rgba(139,92,246,.25),rgba(34,211,238,.14));border-radius:28px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+  header:after{content:"";position:absolute;right:-120px;top:-120px;width:280px;height:280px;border-radius:50%;background:rgba(34,211,238,.20);filter:blur(5px)}
+  h1{font-size:clamp(28px,5vw,50px);line-height:1.02;margin:0 0 10px;font-weight:900;letter-spacing:-.04em}
+  .lead{color:var(--muted);font-size:18px;max-width:850px;margin:0}
+  .badge{display:inline-flex;align-items:center;gap:8px;border:1px solid var(--line);background:rgba(255,255,255,.08);padding:7px 11px;border-radius:999px;margin:5px 5px 14px 0;font-size:13px;color:#e9ecff}
+  .toolbar{position:sticky;top:0;z-index:10;margin:18px 0;padding:12px;border:1px solid var(--line);background:rgba(13,16,33,.86);backdrop-filter:blur(12px);border-radius:22px;box-shadow:var(--shadow)}
+  .tabs{display:flex;gap:8px;overflow:auto;padding-bottom:4px}.tabs button{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:11px 14px;border-radius:16px;white-space:nowrap;cursor:pointer;font-weight:800}.tabs button.active{background:linear-gradient(135deg,var(--a),#06b6d4);border-color:transparent}.progress{height:9px;background:rgba(255,255,255,.08);border-radius:999px;overflow:hidden;margin-top:12px}.bar{height:100%;width:0;background:linear-gradient(90deg,var(--ok),var(--b));transition:.3s}
+  .topic{display:none;animation:fade .22s ease}.topic.active{display:block}@keyframes fade{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .topic-hero{display:grid;grid-template-columns:1.2fr .8fr;gap:18px;margin-top:18px}.card{background:linear-gradient(180deg,rgba(255,255,255,.075),rgba(255,255,255,.035));border:1px solid var(--line);border-radius:24px;padding:22px;box-shadow:0 12px 30px rgba(0,0,0,.25)}
+  h2{font-size:32px;margin:0 0 8px;letter-spacing:-.03em}.subtitle{color:var(--muted);margin:0 0 16px}.mini{font-size:13px;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px}.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;margin-top:14px}.full{grid-column:1/-1}.box{background:rgba(255,255,255,.055);border:1px solid var(--line);border-radius:20px;padding:16px}.box h3{margin:0 0 10px;font-size:18px}.box ul{margin:0;padding-left:20px;color:#e8ebff}.box li{margin:7px 0}.pill{display:inline-block;padding:5px 9px;border-radius:999px;background:rgba(34,211,238,.15);border:1px solid rgba(34,211,238,.28);font-weight:800;color:#d8fbff;margin:4px 4px 4px 0}.warn{background:rgba(245,158,11,.12);border-color:rgba(245,158,11,.35);color:#fff3cc}.danger{background:rgba(251,113,133,.12);border-color:rgba(251,113,133,.35);color:#ffe1e8}.ok{background:rgba(52,211,153,.12);border-color:rgba(52,211,153,.35);color:#d8ffef}
+  table{width:100%;border-collapse:separate;border-spacing:0;overflow:hidden;border-radius:16px;border:1px solid var(--line);margin-top:8px}td,th{padding:12px;border-bottom:1px solid var(--line);vertical-align:top}th{background:rgba(139,92,246,.22);text-align:left}tr:last-child td{border-bottom:0}.formula{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,monospace;background:#090b18;border:1px solid var(--line);padding:12px;border-radius:16px;color:#d8fbff;margin:10px 0}.decision{border-left:5px solid var(--b);background:rgba(34,211,238,.1)}
+  .flash{cursor:pointer;min-height:132px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:900;font-size:18px;transition:.2s}.flash:hover{transform:translateY(-2px);border-color:rgba(34,211,238,.55)}.answer{display:none;color:#d8fbff}.flash.flip .question{display:none}.flash.flip .answer{display:block}.flash-deck{display:grid;gap:14px}.flash-top{display:flex;justify-content:space-between;gap:10px;align-items:center;color:var(--muted);font-weight:800;font-size:13px}.flash-singrados de libertade{min-height:230px;padding:28px;border:1px solid var(--line);background:linear-gradient(180deg,rgba(34,211,238,.10),rgba(139,92,246,.08));border-radius:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:900;font-size:24px;line-height:1.25;transition:.18s;box-shadow:0 14px 30px rgba(0,0,0,.22)}.flash-singrados de libertade:hover{transform:translateY(-2px);border-color:rgba(34,211,238,.5)}.flash-singrados de libertade .back{display:none;color:#d9fbff}.flash-singrados de libertade.flip .front{display:none}.flash-singrados de libertade.flip .back{display:block}.flash-controls{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}.flash-controls button{padding:12px 14px;border-radius:16px;border:1px solid var(--line);background:var(--panel);color:var(--text);font-weight:900;cursor:pointer}.flash-controls button:hover{background:var(--panel2)}.flash-progress{height:9px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;border:1px solid var(--line)}.flash-progress div{height:100%;width:0;background:linear-gradient(90deg,var(--warn),var(--b));transition:.2s}.quiz{margin-top:10px}.quiz button{display:block;width:100%;text-align:left;margin:8px 0;padding:12px;border-radius:14px;border:1px solid var(--line);background:rgba(255,255,255,.06);color:var(--text);cursor:pointer}.quiz button.correct{background:rgba(52,211,153,.18);border-color:rgba(52,211,153,.45)}.quiz button.wrong{background:rgba(251,113,133,.18);border-color:rgba(251,113,133,.45)}.check{display:flex;gap:10px;align-items:flex-start;margin:10px 0;color:#e9ecff}.check input{margin-top:4px;accent-color:#22d3ee;transform:scale(1.2)}
+  .theme-label{font-size:12px;text-transform:uppercase;letter-spacing:.15em;color:#9ee9ff;font-weight:900}.callout{border:1px solid rgba(250,204,21,.35);background:rgba(250,204,21,.09);padding:15px;border-radius:20px;color:#fff7c2}.only{border:1px dashed rgba(255,255,255,.22);padding:12px;border-radius:16px;color:#d9defc}.toc{display:grid;grid-template-columns:repeat(11,1fr);gap:6px;margin-top:12px}.toc div{height:6px;border-radius:999px;background:rgba(255,255,255,.12)}.toc div.done{background:var(--ok)}
+  @media(max-width:900px){.topic-hero,.grid,.grid2{grid-template-columns:1fr}.toolbar{top:0;border-radius:0;margin-left:-18px;margin-right:-18px}.card{padding:17px}.toc{grid-template-columns:repeat(6,1fr)}.flash-controls{grid-template-columns:1fr}.flash-singrados de libertade{font-size:20px;min-height:210px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div class="badge">📘 Recurso reorganizado</div><div class="badge">🧩 Una pestaña por tema</div><div class="badge">🚨 Trampas separadas</div>
+  <h1>Análisis de Datos UNIR</h1>
+  <p class="lead">Repaso limpio, visual y sin mezclar conceptos: cada tema tiene su propia pestaña, sus regrados de libertadas, sus trampas, sus tarjetas y su mini test.</p>
+</header>
+
+<div class="toolbar">
+  <div class="tabs" id="tabs"></div>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+  <div class="toc" id="toc"></div>
+</div>
+
+<main id="content"></main>
+</div>
+<script>
+const DATA = [
+{
+ id:'t1', title:'Tema 1 · Variables, escalas y método científico', icon:'🧠', color:'ok',
+ subtitle:'Aquí solo van los conceptos de investigación, variables, escalas y muestreo.',
+ cae:['Distinguir VI, VD y variable extraña','Nominal vs ordinal vs cuantitativa','Población, muestra, parámetro y estadístico','Tipos de muestreo','Fases del método científico'],
+ conceptos:[
+  ['Variable independiente', 'La que se manipula o clasifica para ver su efecto. Ej: tipo de terapia.'],
+  ['Variable dependiente', 'La que se mide como resultado. Ej: ansiedad, concentración, rendimiento.'],
+  ['Variable extraña', 'Puede influir en la VD pero no es la variable principal. Ej: tolerancia previa al alcohol.'],
+  ['Nominal', 'Categorías sin orden: grupo sanguíneo, estado civil, sexo.'],
+  ['Ordinal', 'Categorías con orden: leve, moderado, severo; bajo, medio, alto.'],
+  ['Cuantitativa discreta', 'Números enteros: número de hijos, aciertos.'],
+  ['Cuantitativa continua', 'Puede tener decimales: peso, tiempo, edad, ansiedad en escala.'],
+  ['Parámetro', 'Valor de la población completa; suele representarse con letras griegas.'],
+  ['Estadístico', 'Valor calculado en una muestra; suele representarse con letras latinas.']
+ ],
+ trampas:['Si tiene números pero son códigos —1 soltera, 2 casada— no es cuantitativa: es cualitativa.','Si hay orden pero no distancia exacta, es ordinal.','Si el dato describe a toda la población, es parámetro, no estadístico.'],
+ tabla:[['Ejemplo','Tipo'],['Grupo sanguíneo','Nominal'],['Leve/Moderado/Severo','Ordinal'],['Número de respuestas correctas','Cuantitativa discreta'],['Tiempo de reacción','Cuantitativa continua'],['Muestreo de voluntarios de tu clase','No probabilístico / conveniencia']],
+ flash:[['Leve, moderado, severo','Ordinal'],['Tipo de terapia','Variable independiente'],['Concentración medida después','Variable dependiente']],
+ quiz:{q:'“Nivel de ansiedad: leve, moderado, severo” es una escala...', opts:['De razón','Ordinal','Nominal'], ans:1},
+ checklist:['Sé diferenciar VI, VD y extraña','Sé clasificar nominal, ordinal, discreta y continua','Sé distinguir parámetro y estadístico','Sé reconocer muestreo no probabilístico']
+},
+{
+ id:'t2', title:'Tema 2 · Estadística descriptiva univariante', icon:'📊', color:'warn',
+ subtitle:'Una sola variable: frecuencias, media, mediana, moda, dispersión, forma y gráficos.',
+ cae:['Suma de frecuencias absolutas','Media, mediana y moda','Asimetría y curtosis','Varianza y desviación típica','Percentiles y cuartiles','Gráficos adecuados'],
+ conceptos:[
+  ['Frecuencia absoluta ni', 'Número de casos en una categoría. La suma de todas las ni siempre es N.'],
+  ['Media', 'Promedio. Muy sensible a valores extremos.'],
+  ['Mediana', 'Valor central. Mejor si hay asimetría o outliers.'],
+  ['Moda', 'Valor o categoría más frecuente.'],
+  ['Varianza', 'Promedio de las distancias al cuadrado respecto a la media.'],
+  ['Desviación típica', 'Raíz de la varianza. Indica dispersión en las unidades originales.'],
+  ['Percentil 85', 'La persona supera al 85% de la muestra de referencia.'],
+  ['Asimetría positiva', 'Cola hacia la derecha; media suele ser mayor que mediana.'],
+  ['Asimetría negativa', 'Cola hacia la izquierda; media suele ser menor que mediana.'],
+  ['Curtosis', 'Forma de apuntamiento: leptocúrtica, mesocúrtica o platicúrtica.']
+ ],
+ formulas:['Suma de todas las frecuencias absolutas = total de casos (N)','Rango = valor máximo menos valor mínimo','z asimetría = Estadístico / Error típico','Media = Suma de todas las puntuaciones / total de casos'],
+ trampas:['Media = mediana = moda suele indicar simetría.','Sumar una constante a todos los datos no cambia la varianza.','La moda en una tabla es la categoría con mayor frecuencia, no el número de frecuencia.','Para ordinal, mejor mediana/cuartiles que media/desviación.'],
+ tabla:[['Variable','Gráfico adecuado'],['Cualitativa nominal/ordinal','Barras o sectores'],['Cuantitativa continua','Histograma'],['Distribución y outliers','Caja y bigotes'],['Normalidad visual','Q-Q plot']],
+ flash:[['Si sumo todas las frecuencias absolutas, obtengo...','N, el tamaño muestral'],['Percentil 85','Supera al 85%'],['Cola a la derecha','Asimetría positiva']],
+ quiz:{q:'Si a todas las puntuaciones les sumo 5, la varianza...', opts:['Aumenta 5','Aumenta 25','Permanece igual'], ans:2},
+ checklist:['Sé calcular media, mediana y moda','Sé interpretar percentiles','Sé leer asimetría positiva/negativa','Sé elegir gráfico según variable']
+},
+{
+ id:'t3', title:'Tema 3 · Dos variables I: Chi-cuadrado y Spearman', icon:'🧩', color:'ok',
+ subtitle:'Relación entre variables cualitativas u ordinales. No mezclado con regresión.',
+ cae:['Chi-cuadrado de independencia','Hipótesis hipótesis nula / hipótesis alternativa en chi-cuadrado','Grados de libertad','Phi y V de Cramer','Spearman para ordinal/rangos'],
+ conceptos:[
+  ['Chi-cuadrado', 'Para estudiar relación entre dos variables cualitativas/categóricas.'],
+  ['Hipótesis nula en Chi-cuadrado', 'Las variables son independientes/no hay relación.'],
+  ['Hipótesis alternativa en Chi-cuadrado', 'Las variables son dependientes/sí hay relación.'],
+  ['p menor que .05', 'Se rechaza hipótesis nula: hay relación significativa.'],
+  ['Grados de libertad', 'En tablas: (filas menos 1)(columnas menos 1).'],
+  ['Phi', 'Tamaño del efecto en tablas 2 x 2.'],
+  ['V de Cramer', 'Tamaño del efecto en tablas mayores de 2 x 2.'],
+  ['Spearman', 'Correlación para ordinales o rangos; también si una variable es ordinal y la otra cuantitativa.']
+ ],
+ formulas:['grados de libertad = (filas menos 1) × (columnas menos 1)','Tabla 3 x 4 → grados de libertad = (3 menos 1) × (4 menos 1) = 6'],
+ trampas:['Chi-cuadrado significativo no te dice que el efecto sea grande: luego miras Phi o V.','Phi solo para 2 x 2. Si hay más categorías, usa V de Cramer.','Frecuencias esperadas: ojo, deben ser suficientes para aplicar Chi-cuadrado con seguridad.'],
+ tabla:[['Caso','Prueba / efecto'],['Nominal + nominal','Chi-cuadrado'],['Ordinal + ordinal','Spearman'],['Tabla 2 x 2 significativa','Phi'],['Tabla mayor significativa','V de Cramer']],
+ flash:[['hipótesis nula en Chi-cuadrado','No hay relación / independencia'],['Tabla 3 x 4 grados de libertad','6'],['Tabla 2 x 2 efecto','Phi']],
+ quiz:{q:'Una tabla de contingencia 3 x 4 tiene...', opts:['12 grados de libertad','8 grados de libertad','6 grados de libertad'], ans:2},
+ checklist:['Sé cuándo usar Chi-cuadrado','Sé plantear hipótesis nula y hipótesis alternativa','Sé calcular grados de libertad de tablas','Sé elegir Phi o V de Cramer']
+},
+{
+ id:'t4', title:'Tema 4 · Dos variables II: Pearson y regresión', icon:'📈', color:'warn',
+ subtitle:'Solo relación entre cuantitativas, covarianza, correlación y predicción lineal.',
+ cae:['Covarianza','Pearson','Dirección e intensidad de r','R cuadrado','Recta de regresión','Pendiente e intercepto','Varianza residual / error cuadrático medio'],
+ conceptos:[
+  ['Covarianza', 'Indica dirección de relación, pero no está acotada; por eso cuesta interpretar su fuerza.'],
+  ['Pearson r', 'Relación lineal entre dos cuantitativas. Va de -1 a +1.'],
+  ['r positivo', 'Relación directa: cuando X sube, Y tiende a subir.'],
+  ['r negativo', 'Relación inversa: cuando X sube, Y tiende a bajar.'],
+  ['r = 0', 'No hay relación lineal. No significa independencia total.'],
+  ['R cuadrado', 'Proporción de varianza de Y explicada por X o por el modelo.'],
+  ['Regresión lineal', 'Predice Y a partir de X: Predicción = constante + pendiente × X.'],
+  ['a', 'Constante/intercepto: valor de Y cuando X=0.'],
+  ['b', 'Pendiente: cuánto cambia Y por cada unidad que aumenta X.'],
+  ['Varianza residual', 'Error cuadrático medio; variabilidad que el modelo no explica.']
+ ],
+ formulas:['Predicción = constante + pendiente × X','R cuadrado = correlación al cuadrado','Si si la correlación es 0 → la pendiente es 0'],
+ trampas:['r=-0.85 no es “malo”: es relación inversa fuerte.','r=0 solo descarta relación lineal, no toda relación posible.','Si la pendiente no es significativa, el modelo no predice bien.','El valor t de la tabla no es la pendiente. La pendiente está en coeficientes no estandarizados.'],
+ tabla:[['Valor r','Interpretación'],['+0.85','Directa fuerte'],['-0.85','Inversa fuerte'],['0.03','Casi nula'],['0','Pendiente b=0']],
+ flash:[['Predicción = constante + pendiente × X: b es...','La pendiente'],['R cuadrado = .40','40% de varianza explicada'],['Covarianza problema','No tiene límites fijos']],
+ quiz:{q:'Si Predicción = 2.5X + 10 y X=4, Predicción vale...', opts:['14','20','22.5'], ans:1},
+ checklist:['Sé interpretar r positivo/negativo','Sé calcular R cuadrado','Sé usar Predicción=a+bX','Sé interpretar la pendiente']
+},
+{
+ id:'t5', title:'Tema 5 · Probabilidad básica', icon:'🎲', color:'ok',
+ subtitle:'Regrados de libertadas de probabilidad, sucesos, Laplace, unión, intersección y Bayes básico.',
+ cae:['Probabilidad entre 0 y 1','Regrados de libertada de Laplace','Suceso imposible','Sucesos incompatibles','Independencia','Unión de sucesos','Bayes'],
+ conceptos:[
+  ['Probabilidad', 'Siempre está entre 0 y 1. Nunca puede ser negativa ni mayor que 1.'],
+  ['Laplace', 'Casos favorables / casos posibles si todos son equiprobables.'],
+  ['Suceso imposible', 'No pertenece al espacio muestral; probabilidad 0.'],
+  ['Mutuamente excluyentes', 'No pueden ocurrir a la vez: Probabilidad de que A y B ocurran a la vez = 0.'],
+  ['Independientes', 'Que ocurra uno no cambia la probabilidad del otro: Probabilidad de A y B a la vez = probabilidad de A × probabilidad de B.'],
+  ['Unión', 'A o B: Probabilidad de A o B = probabilidad de A + probabilidad de B - probabilidad de A y B a la vez.'],
+  ['Bayes', 'Invierte la condición: probabilidad de la causa sabiendo que ocurrió el resultado.']
+ ],
+ formulas:['Probabilidad de A=favorables/posibles','Probabilidad de A y B a la vez = probabilidad de A × probabilidad de B si independientes','Probabilidad de A o B = probabilidad de A + probabilidad de B - probabilidad de A y B a la vez'],
+ trampas:['“A o B” normalmente implica unión, no multiplicación.','“A y B” implica intersección.','Si son incompatibles, la intersección es 0.','Si preguntas “dado que...” suele ser probabilidad condicionada o Bayes.'],
+ tabla:[['Pregunta','Operación'],['A y B independientes','Multiplicar'],['A o B','Sumar y restar intersección'],['No A','1 - Probabilidad de A'],['Dado resultado, causa','Bayes']],
+ flash:[['Dado par en dado','3/6 = 0.5'],['A y B incompatibles','Probabilidad de que A y B ocurran a la vez = 0'],['Probabilidad de A=.30, no A','.70']],
+ quiz:{q:'Probabilidad de A=.20, P(B)=.30, Probabilidad de A y B a la vez=.05. Probabilidad de A o B=...', opts:['.06','.45','.50'], ans:1},
+ checklist:['Sé distinguir unión/intersección','Sé usar complementario','Sé reconocer independencia','Sé cuándo aparece Bayes']
+},
+{
+ id:'t6', title:'Tema 6 · Distribuciones y normalidad', icon:'🔔', color:'warn',
+ subtitle:'Normal, Z, binomial, t de Student, F, chi-cuadrado y prueba de normalidad.',
+ cae:['Distribución normal y Z','Shapiro-Wilk','Binomial B(n,p)','t de Student','F de Fisher','Chi-cuadrado','Normal estándar'],
+ conceptos:[
+  ['Normal estándar', 'Media 0 y desviación típica 1.'],
+  ['Puntuación Z', 'Número de desviaciones típicas que una puntuación se aleja de la media.'],
+  ['Shapiro-Wilk', 'Prueba de normalidad recomendada especialmente con n<50.'],
+  ['Binomial', 'Distribución discreta para número de éxitos en n ensayos.'],
+  ['B(10, .30)', '10 es n, número de ensayos; .30 es p, probabilidad de éxito.'],
+  ['t de Student', 'Similar a normal pero con colas más gruesas; depende de grados de libertad.'],
+  ['F de Fisher', 'Solo adopta valores positivos; suele ser asimétrica.'],
+  ['Chi-cuadrado', 'También positiva/asimétrica; útil en Chi-cuadrado y varianzas.']
+ ],
+ formulas:['puntuación Z = (puntuación directa - media) / desviación típica','Binomial: n = número de ensayos, p = probabilidad de éxito'],
+ trampas:['Si Shapiro p>.05, se asume normalidad.','Si Shapiro p<.05, no normalidad.','F no puede ser negativa.','Binomial no admite valores decimales de éxitos.'],
+ tabla:[['Distribución','Clave'],['Normal','Continua y simétrica'],['t de Student','Simétrica, colas gruesas, grados de libertad'],['F de Fisher','Positiva y asimétrica'],['Binomial','Discreta, éxitos/fracaso']],
+ flash:[['Puntuación directa = 130, media = 100, desviación típica = 15','z=2'],['Binomial con 10 ensayos y probabilidad de éxito .30: 10','Número de ensayos'],['Shapiro p = .047','No normalidad']],
+ quiz:{q:'Para normalidad en muestra pequeña se recomienda...', opts:['Mauchly','Shapiro-Wilk','Levene'], ans:1},
+ checklist:['Sé calcular Z','Sé interpretar Shapiro','Sé diferenciar binomial/normal/t/F','Sé interpretar B(n,p)']
+},
+{
+ id:'t7', title:'Tema 7 · Inferencia y contraste de hipótesis', icon:'⚖️', color:'danger',
+ subtitle:'hipótesis nula, hipótesis alternativa, p-valor, alfa, beta, potencia, intervalos y regiones de rechazo.',
+ cae:['hipótesis nula y hipótesis alternativa','p-valor vs alfa','Error tipo I y II','Potencia','Contraste unilateral/bilateral','Intervalos de confianza','Estimación vs contraste'],
+ conceptos:[
+  ['hipótesis nula', 'Ausencia de diferencias, efecto o relación.'],
+  ['hipótesis alternativa', 'Hay diferencia, efecto o relación. Puede ser bilateral o unilateral.'],
+  ['p-valor', 'Probabilidad de obtener datos como los observados si hipótesis nula fuera cierta.'],
+  ['alfa', 'Nivel de significación; probabilidad de error tipo I.'],
+  ['Error tipo I', 'Rechazar hipótesis nula siendo verdadera. Falso positivo.'],
+  ['Error tipo II', 'No rechazar hipótesis nula siendo falsa. Falso negativo.'],
+  ['Potencia', '1 menos beta: detectar un efecto real.'],
+  ['Bilateral', 'La región crítica está repartida en dos colas.'],
+  ['Intervalo de confianza', 'A más confianza, intervalo más ancho.'],
+  ['Estimación vs contraste', 'Estimación da un valor/intervalo; contraste toma decisión.']
+ ],
+ formulas:['Si p menor que alfa → rechazo hipótesis nula','Si p mayor que alfa → no rechazo hipótesis nula','Potencia = 1 - beta'],
+ trampas:['p = .018 con alfa = .01 no es significativo, porque .018 es mayor que .01.','“Aceptar hipótesis nula” mejor decir “no rechazar hipótesis nula”.','Más confianza no es intervalo más estrecho: es más ancho.','Un test positivo confirmado es potencia, no error.'],
+ tabla:[['Situación','Nombre'],['Rechazo hipótesis nula y era verdadera','Error tipo I'],['No rechazo hipótesis nula y era falsa','Error tipo II'],['Rechazo hipótesis nula y era falsa','Potencia'],['No rechazo hipótesis nula y era verdadera','Decisión correcta']],
+ flash:[['alfa','Error tipo I'],['beta','Error tipo II'],['1 menos beta','Potencia']],
+ quiz:{q:'t = 2.45, p = .018, alfa = .01. Concluyo...', opts:['Significativo','No significativo','Error tipo I seguro'], ans:1},
+ checklist:['Sé aplicar p menor que alfa','Sé distinguir error tipo I y II','Sé interpretar potencia','Sé diferenciar unilateral/bilateral']
+},
+{
+ id:'t8', title:'Tema 8 · Contraste entre dos grupos', icon:'👥', color:'danger',
+ subtitle:'Aquí va lo que te faltaba: d de Cohen, Welch, Mann-Whitney y Wilcoxon.',
+ cae:['Dos grupos independientes','Dos grupos relacionados','Shapiro y Levene','t de Student','t de Welch','Mann-Whitney U','Wilcoxon','d de Cohen'],
+ conceptos:[
+  ['Dos independientes', 'Personas distintas en cada grupo. Ej: público vs privado.'],
+  ['Dos relacionados', 'Mismas personas medidas dos veces. Ej: antes/después.'],
+  ['Normalidad', 'Se comprueba con Shapiro-Wilk.'],
+  ['Homocedasticidad', 'Igualdad de varianzas. Se comprueba con Levene.'],
+  ['t de Student independiente', 'Dos grupos independientes, normalidad y varianzas iguales.'],
+  ['t de Welch', 'Dos grupos independientes, normalidad sí, Levene significativo/varianzas desiguales.'],
+  ['Mann-Whitney U', 'Alternativa no paramétrica para dos grupos independientes.'],
+  ['t relacionada', 'Dos mediciones relacionadas con normalidad.'],
+  ['Wilcoxon', 'Alternativa no paramétrica para dos grupos relacionados.'],
+  ['d de Cohen', 'Tamaño del efecto para comparar dos medias.']
+ ],
+ formulas:['Levene p menor que .05 → Welch','Shapiro p menor que .05 → no paramétrica','d de Cohen: .20 pequeño · .50 moderado · .80 o más grande'],
+ trampas:['Welch no es por no normalidad: es por varianzas desiguales con normalidad.','Mann-Whitney es independientes no normales.','Wilcoxon es relacionados no normales.','d de Cohen NO es para ANOVA grados de libertadobal: es para dos medias.'],
+ tabla:[['Caso','Prueba'],['2 independientes + normal + Levene p>.05','t de Student'],['2 independientes + normal + Levene p<.05','t de Welch'],['2 independientes + no normal','Mann-Whitney U'],['2 relacionadas + normal','t relacionada'],['2 relacionadas + no normal','Wilcoxon']],
+ flash:[['Levene p = .026','Welch'],['Antes/después no normal','Wilcoxon'],['d de Cohen = .85','Efecto grande']],
+ quiz:{q:'Dos grupos independientes, Shapiro p>.05 y Levene p=.024. Uso...', opts:['t de Student','t de Welch','Wilcoxon'], ans:1},
+ checklist:['Sé decidir Student/Welch/Mann-Whitney','Sé decidir t relacionada/Wilcoxon','Sé interpretar Levene','Sé interpretar d de Cohen']
+},
+{
+ id:'t9', title:'Tema 9 · Más de dos grupos: ANOVA', icon:'🚦', color:'danger',
+ subtitle:'ANOVA, Kruskal-Wallis, Friedman, Tukey, Games-Howell, esfericidad y eta cuadrado.',
+ cae:['ANOVA independiente','ANOVA de Welch','Kruskal-Wallis','ANOVA medidas repetidas','Friedman','Mauchly/esfericidad','Tukey y Games-Howell','Eta cuadrado'],
+ conceptos:[
+  ['ANOVA de un factor', 'Compara más de dos medias independientes con supuestos paramétricos.'],
+  ['F', 'Cociente entre variabilidad intergrupos e intragrupos.'],
+  ['Faproximadamente1', 'Si la media cuadrática intergrupos e intragrupos son parecidas.'],
+  ['ANOVA de Welch', 'Más de dos grupos, normalidad sí, pero no homogeneidad de varianzas.'],
+  ['Kruskal-Wallis', 'Alternativa no paramétrica a ANOVA de grupos independientes.'],
+  ['ANOVA medidas repetidas', 'Más de dos mediciones en las mismas personas.'],
+  ['Esfericidad', 'Supuesto extra de ANOVA de medidas repetidas. Se comprueba con Mauchly.'],
+  ['Friedman', 'Alternativa no paramétrica a ANOVA de medidas repetidas.'],
+  ['Tukey', 'Post hoc si hay homogeneidad de varianzas.'],
+  ['Games-Howell', 'Post hoc si no hay homogeneidad de varianzas.'],
+  ['eta cuadrado / eta cuadrado', 'Tamaño del efecto en ANOVA.']
+ ],
+ formulas:['F = variabilidad entre grupos / variabilidad dentro de grupos','grados de libertad intergrupos = k-1','eta cuadrado: .01 pequeño · .06 moderado · .14 grande'],
+ trampas:['ANOVA significativo dice que hay diferencias, pero no entre qué grupos.','Post hoc solo tiene sentido si el ANOVA grados de libertadobal es significativo.','Tukey = varianzas homogéneas. Games-Howell = heterocedasticidad.','Mauchly NO corrige: comprueba esfericidad. Greenhouse-Geisser/Huynh-Feldt corrigen.'],
+ tabla:[['Caso','Prueba'],['>2 grupos independientes + supuestos OK','ANOVA'],['>2 grupos independientes + sin homogeneidad','ANOVA de Welch'],['>2 grupos independientes + no normal','Kruskal-Wallis'],['>2 medidas relacionadas + supuestos OK','ANOVA medidas repetidas'],['>2 medidas relacionadas + no normal','Friedman'],['Post hoc homogéneo','Tukey'],['Post hoc no homogéneo','Games-Howell']],
+ flash:[['Games-Howell','Sin homogeneidad'],['Tukey','Con homogeneidad'],['eta cuadrado = .66','Efecto grande']],
+ quiz:{q:'ANOVA significativo y Levene no significativo. Post hoc...', opts:['Games-Howell','Tukey','Mann-Whitney'], ans:1},
+ checklist:['Sé decidir ANOVA/Welch/Kruskal','Sé decidir Tukey/Games-Howell','Sé interpretar F y eta cuadrado','Sé reconocer esfericidad y Friedman']
+},
+{
+ id:'t10', title:'Tema 10 · Investigación cualitativa I', icon:'📝', color:'ok',
+ subtitle:'Diseño cualitativo, entrevistas, grupos focales, observación y circularidad.',
+ cae:['Técnicas de recogida cualitativa','Entrevista semiestructurada','Grupo focal','Notas de campo','Circularidad','Análisis durante todo el proceso'],
+ conceptos:[
+  ['Investigación cualitativa', 'Busca comprender significados, experiencias y procesos.'],
+  ['Entrevista semiestructurada', 'Tiene guion previo, pero preguntas abiertas y flexibles.'],
+  ['Grupo focal', 'Pequeño grupo que conversa sobre una temática guiada.'],
+  ['Observación participante', 'El investigador observa participando en el contexto.'],
+  ['Notas de campo', 'Registros escritos de lo observado, escuchado o reflexionado.'],
+  ['Circularidad', 'Las fases no son lineales; se puede volver atrás y reformular.'],
+  ['Análisis cualitativo', 'No ocurre solo al final: aparece durante todo el proceso.']
+ ],
+ trampas:['Grupo focal no es simplemente entrevista grupal cualquiera: es conversación guiada sobre un tema.','Circularidad significa volver atrás si hace falta, no seguir pasos rígidos.','En cualitativa el análisis no se reserva al final.'],
+ tabla:[['Técnica','Clave'],['Entrevista semiestructurada','Guion + preguntas abiertas'],['Grupo focal','6-8 personas debaten una temática'],['Observación participante','Observar dentro del contexto'],['Notas de campo','Base del análisis cualitativo']],
+ flash:[['Guion previo + abiertas','Entrevista semiestructurada'],['Pequeño grupo conversando','Grupo focal'],['Fases no lineales','Circularidad']],
+ quiz:{q:'Una técnica con pequeño grupo que conversa sobre una temática es...', opts:['Grupo focal','Regresión','Mauchly'], ans:0},
+ checklist:['Sé diferenciar técnicas cualitativas','Sé explicar circularidad','Sé ubicar notas de campo','Sé distinguir entrevista semiestructurada']
+},
+{
+ id:'t11', title:'Tema 11 · Investigación cualitativa II', icon:'🧵', color:'ok',
+ subtitle:'Codificación, categorización, informe cualitativo y tipos de notas.',
+ cae:['Codificación inductiva/deductiva','Categorización','Recodificación','Notas observacionales, teóricas y metodológicas','Informe cualitativo'],
+ conceptos:[
+  ['Código', 'Etiqueta que resume un fragmento de información.'],
+  ['Codificación inductiva', 'Los códigos salen de los datos.'],
+  ['Codificación deductiva', 'Los códigos vienen de teoría previa.'],
+  ['Categorización', 'Agrupar códigos en categorías más amplias.'],
+  ['Codificación refinada', 'Depurar, reorganizar o ajustar códigos para mejorar el análisis.'],
+  ['Notas observacionales', 'Describen lo que se ve y escucha.'],
+  ['Notas teóricas', 'Ideas, hipótesis, interpretaciones o corazonadas del investigador.'],
+  ['Notas metodológicas', 'Decisiones sobre cómo recoger o analizar datos.'],
+  ['Informe cualitativo', 'Suele organizarse por capítulos, secciones o categorías.']
+ ],
+ trampas:['Inductivo = sale de los datos; deductivo = sale de teoría.','Categorización no es lo mismo que codificación inicial: agrupa códigos.','Las corazonadas del autor van en notas teóricas.'],
+ tabla:[['Concepto','Clave'],['Inductivo','De datos a códigos'],['Deductivo','De teoría a datos'],['Categorización','Agrupa códigos'],['Notas teóricas','Hipótesis/corazonadas'],['Notas metodológicas','Decisiones del método']],
+ flash:[['Códigos desde los datos','Inductivos'],['Agrupar códigos','Categorización'],['Corazonadas del autor','Notas teóricas']],
+ quiz:{q:'Cuando los códigos provienen de la propia información hablamos de...', opts:['Códigos deductivos','Códigos inductivos','Error tipo I'], ans:1},
+ checklist:['Sé distinguir inductivo/deductivo','Sé explicar categorización','Sé diferenciar tipos de notas','Sé reconocer estructura de informe cualitativo']
+}
+];
+
+const content = document.getElementById('content');
+const tabs = document.getElementById('tabs');
+const toc = document.getElementById('toc');
+
+function pill(text,cls=''){return `<span class="pill ${cls}">${text}</span>`}
+function renderTopic(t,i){
+ const concepts=t.conceptos.map(([a,b])=>`<div class="box"><h3>${a}</h3><p class="mini">${b}</p></div>`).join('');
+ const formulas=(t.formulas||[]).map(f=>`<div class="formula">${f}</div>`).join('');
+ const trampas=t.trampas.map(x=>`<li>${x}</li>`).join('');
+ const tabla=t.tabla?`<table>${t.tabla.map((r,j)=>`<tr>${r.map(c=>j==0?`<th>${c}</th>`:`<td>${c}</td>`).join('')}</tr>`).join('')}</table>`:'';
+ const flashDeck=`<div class="flash-deck" data-topic-index="${i}">
+   <div class="flash-top"><span>🃏 Tarjeta <b class="flash-num">1</b> de ${t.flash.length}</span><span class="mini">Pulsa para ver la respuesta</span></div>
+   <div class="flash-singrados de libertade"><div class="front"></div><div class="back"></div></div>
+   <div class="flash-progress"><div></div></div>
+   <div class="flash-controls"><button onclick="prevFlash(this)">← Anterior</button><button onclick="flipFlash(this)">Girar tarjeta</button><button onclick="nextFlash(this)">Siguiente →</button></div>
+ </div>`;
+ const quiz=`<div class="quiz" data-ans="${t.quiz.ans}"><p><strong>${t.quiz.q}</strong></p>${t.quiz.opts.map((o,j)=>`<button onclick="answerQuiz(this,${j})">${o}</button>`).join('')}</div>`;
+ const checklist=t.checklist.map((x,j)=>`<label class="check"><input type="checkbox" data-topic="${i}" onchange="saveCheck()"><span>${x}</span></label>`).join('');
+ return `<section class="topic ${i==0?'active':''}" id="${t.id}">
+   <div class="topic-hero">
+     <div class="card">
+       <div class="theme-label">${t.icon} ${t.title}</div>
+       <h2>${t.title}</h2>
+       <p class="subtitle">${t.subtitle}</p>
+       <div>${t.cae.map(x=>pill(x)).join('')}</div>
+     </div>
+     <div class="card decision">
+       <h3>🎯 Objetivo de esta pestaña</h3>
+       <p class="mini">Estudia solo este tema. No se mezclan pruebas de otros temas, salvo cuando es necesario para diferenciar trampas.</p>
+       ${checklist}
+     </div>
+   </div>
+   <div class="grid full">
+     <div class="box full"><h3>📌 Conceptos clave</h3><div class="grid">${concepts}</div></div>
+     <div class="box"><h3>🧮 Fórmulas / regrados de libertadas</h3>${formulas || '<p class="mini">En este tema pesan más las definiciones que las fórmulas.</p>'}</div>
+     <div class="box"><h3>🚨 Trampas de examen</h3><ul>${trampas}</ul></div>
+     <div class="box"><h3>🗂️ Tabla-resumen</h3>${tabla}</div>
+     <div class="box full"><h3>🃏 Flashcards</h3><p class="mini">Ahora funcionan como el test: una tarjeta cada vez. Intenta responder mentalmente, gira y pasa a la siguiente.</p>${flashDeck}</div>
+     <div class="box full"><h3>✅ Mini test del tema</h3>${quiz}</div>
+   </div>
+ </section>`;
+}
+
+DATA.forEach((t,i)=>{
+ tabs.insertAdjacentHTML('beforeend',`<button class="${i==0?'active':''}" onclick="showTopic(${i})">${t.icon} Tema ${i+1}</button>`);
+ toc.insertAdjacentHTML('beforeend',`<div id="dot${i}"></div>`);
+ content.insertAdjacentHTML('beforeend',renderTopic(t,i));
+});
+document.querySelectorAll('.flash-deck').forEach(deck=>{
+ deck.dataset.index=0;
+ deck.querySelector('.flash-singrados de libertade').addEventListener('click',()=>deck.querySelector('.flash-singrados de libertade').classList.toggrados de libertade('flip'));
+ drawFlash(deck);
+});
+
+function showTopic(i){
+ document.querySelectorAll('.topic').forEach((s,j)=>s.classList.toggrados de libertade('active',i===j));
+ document.querySelectorAll('.tabs button').forEach((b,j)=>b.classList.toggrados de libertade('active',i===j));
+ window.scrollTo({top:0,behavior:'smooth'});
+}
+function drawFlash(deck){
+ const topicIndex=Number(deck.dataset.topicIndex);
+ const t=DATA[topicIndex];
+ let idx=Number(deck.dataset.index||0);
+ const card=deck.querySelector('.flash-singrados de libertade');
+ deck.querySelector('.front').textContent=t.flash[idx][0];
+ deck.querySelector('.back').textContent=t.flash[idx][1];
+ deck.querySelector('.flash-num').textContent=idx+1;
+ deck.querySelector('.flash-progress div').style.width=((idx+1)/t.flash.length*100)+'%';
+ card.classList.remove('flip');
+}
+function nextFlash(btn){
+ const deck=btn.closest('.flash-deck');
+ const t=DATA[Number(deck.dataset.topicIndex)];
+ const idx=(Number(deck.dataset.index||0)+1)%t.flash.length;
+ deck.dataset.index=idx;
+ drawFlash(deck);
+}
+function prevFlash(btn){
+ const deck=btn.closest('.flash-deck');
+ const t=DATA[Number(deck.dataset.topicIndex)];
+ const idx=(Number(deck.dataset.index||0)-1+t.flash.length)%t.flash.length;
+ deck.dataset.index=idx;
+ drawFlash(deck);
+}
+function flipFlash(btn){
+ btn.closest('.flash-deck').querySelector('.flash-singrados de libertade').classList.toggrados de libertade('flip');
+}
+
+function answerQuiz(btn,i){
+ const q=btn.closest('.quiz'); const ans=Number(q.dataset.ans);
+ q.querySelectorAll('button').forEach((b,j)=>{b.disabled=true; b.classList.toggrados de libertade('correct',j===ans); if(j===i&&j!==ans)b.classList.add('wrong')});
+}
+function saveCheck(){
+ const states=[...document.querySelectorAll('.check input')].map(x=>x.checked?1:0); localStorage.setItem('unirTemaChecks',JSON.stringify(states)); updateProgress();
+}
+function loadCheck(){
+ const states=JSON.parse(localStorage.getItem('unirTemaChecks')||'[]'); document.querySelectorAll('.check input').forEach((x,i)=>x.checked=!!states[i]); updateProgress();
+}
+function updateProgress(){
+ const checks=[...document.querySelectorAll('.check input')]; const done=checks.filter(x=>x.checked).length; document.getElementById('bar').style.width=(done/checks.length*100)+'%';
+ DATA.forEach((_,i)=>{const topicChecks=checks.filter(x=>Number(x.dataset.topic)===i); const ok=topicChecks.length && topicChecks.every(x=>x.checked); document.getElementById('dot'+i).classList.toggrados de libertade('done',ok);});
+}
+loadCheck();
+</script>
+</body>
+</html>
